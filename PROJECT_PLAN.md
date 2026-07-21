@@ -16,7 +16,7 @@ This document outlines the end-to-end development roadmap for the Online Banking
 - [x] **Day 1: Project Setup & Analysis**
   - Calculate variant parameters from Student ID.
   - Initialize Hardhat, OpenZeppelin, and clean up boilerplate files (`Counter.sol`, etc.).
-- [ ] **Day 2: Mock Token & Vault Manager**
+- [x] **Day 2: Mock Token & Vault Manager**
   - Develop `MockUSDC.sol` (ERC20, 6 decimals).
   - Develop `VaultManager.sol` (Ownable, Pausable, Admin funds).
 - [ ] **Day 3: Base Unit Tests**
