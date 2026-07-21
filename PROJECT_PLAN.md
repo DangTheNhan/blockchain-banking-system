@@ -19,7 +19,7 @@ This document outlines the end-to-end development roadmap for the Online Banking
 - [x] **Day 2: Mock Token & Vault Manager**
   - Develop `MockUSDC.sol` (ERC20, 6 decimals).
   - Develop `VaultManager.sol` (Ownable, Pausable, Admin funds).
-- [ ] **Day 3: Base Unit Tests**
+- [x] **Day 3: Base Unit Tests**
   - Write test cases for `MockUSDC` minting and `VaultManager` logic.
 
 ## 🧠 Phase 2: Core Business Logic (Days 4 - 7)

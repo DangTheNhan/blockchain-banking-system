@@ -36,3 +36,23 @@ Tài liệu này ghi lại chi tiết các công việc đã hoàn thành theo t
   - Hoàn thiện chức năng bảo mật `pause()` và `unpause()` để kiểm soát rủi ro.
 - **Biên dịch (Compile):**
   - Chạy `npx hardhat compile` thành công (Solc 0.8.28) không gặp lỗi cú pháp hay bảo mật nào.
+
+---
+
+## Ngày 3: Viết Unit Test cơ bản (Base Unit Tests)
+**Trạng thái:** ✅ Hoàn thành
+
+**Các công việc đã thực hiện:**
+- **Triển khai môi trường Test:**
+  - Viết test bằng TypeScript (`MockUSDC.ts` và `VaultManager.ts`).
+  - Cấu hình sử dụng Mocha, Chai và Ethers (thông qua plugin của Hardhat: `@nomicfoundation/hardhat-toolbox-mocha-ethers`).
+- **Test cho `MockUSDC.sol`:**
+  - Đảm bảo tham số cấu hình: Name ("Mock USDC"), Symbol ("mUSDC") và số thập phân (6 decimals).
+  - Kiểm tra chức năng `mint()` phát ra (emit) event `Transfer` chính xác và cập nhật đúng số dư (balance) lẫn tổng cung (total supply).
+- **Test cho `VaultManager.sol`:**
+  - Xác nhận Smart Contract được khởi tạo đúng địa chỉ token cơ sở và đúng Owner.
+  - Kiểm tra logic `Pausable`: Chỉ Owner mới được gọi `pause`/`unpause`, phát sự kiện đầy đủ, tài khoản bình thường bị chặn (`OwnableUnauthorizedAccount`).
+  - Kiểm tra logic nạp/rút quỹ Admin: Owner gửi tiền thì token vào vault, balance tăng, event `AdminDeposited` phát ra. Owner rút tiền thì balance giảm, event `AdminWithdrawn` phát ra.
+  - Đảm bảo không thể nạp quỹ khi hệ thống bị tạm ngưng (`EnforcedPause`).
+- **Khởi chạy Test Suite:**
+  - Chạy `npx hardhat test` và tất cả các test case đều đã passed thành công (11/11 tests passing).
