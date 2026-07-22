@@ -15,11 +15,16 @@ contract VaultManager is Ownable, Pausable {
     using SafeERC20 for IERC20;
 
     IERC20 public immutable token;
+    address public savingCore;
+    address public feeReceiver;
 
     event AdminDeposited(uint256 amount);
     event AdminWithdrawn(uint256 amount, address to);
     event PausedByAdmin(address account);
     event UnpausedByAdmin(address account);
+    event FeeReceiverSet(address feeReceiver);
+    event SavingCoreSet(address savingCore);
+    event InterestPaid(address indexed to, uint256 amount);
 
     /**
      * @dev Constructor sets the underlying token and initializes the Ownable contract.
@@ -47,6 +52,24 @@ contract VaultManager is Ownable, Pausable {
     }
 
     /**
+     * @dev Sets the fee receiver for early withdrawal penalties.
+     */
+    function setFeeReceiver(address _feeReceiver) external onlyOwner {
+        require(_feeReceiver != address(0), "VaultManager: Fee receiver cannot be zero address");
+        feeReceiver = _feeReceiver;
+        emit FeeReceiverSet(_feeReceiver);
+    }
+
+    /**
+     * @dev Sets the SavingCore contract address for trusted calls.
+     */
+    function setSavingCore(address _savingCore) external onlyOwner {
+        require(_savingCore != address(0), "VaultManager: SavingCore cannot be zero address");
+        savingCore = _savingCore;
+        emit SavingCoreSet(_savingCore);
+    }
+
+    /**
      * @dev Allows admin to deposit funds into the vault.
      * @param amount The amount of tokens to deposit.
      */
@@ -70,6 +93,23 @@ contract VaultManager is Ownable, Pausable {
 
         token.safeTransfer(to, amount);
         emit AdminWithdrawn(amount, to);
+    }
+
+    /**
+     * @dev Pays out interest to users. Only callable by SavingCore.
+     * @param to Address to receive the interest.
+     * @param amount Amount of interest to pay out.
+     */
+    function payoutInterest(address to, uint256 amount) external whenNotPaused {
+        require(msg.sender == savingCore, "VaultManager: Only SavingCore can call this function");
+        require(to != address(0), "VaultManager: Cannot payout to zero address");
+        require(amount > 0, "VaultManager: Payout amount must be greater than zero");
+
+        uint256 vaultBalance = token.balanceOf(address(this));
+        require(vaultBalance >= amount, "VaultManager: Insufficient vault balance for interest");
+
+        token.safeTransfer(to, amount);
+        emit InterestPaid(to, amount);
     }
 
     /**
