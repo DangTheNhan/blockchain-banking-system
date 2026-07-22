@@ -132,3 +132,56 @@ Tài liệu này ghi lại chi tiết các công việc đã hoàn thành theo t
   - Chạy thành công lệnh `npx hardhat run scripts/deploy.ts`. Script xuất ra thông báo thành công và log ra đầy đủ 3 địa chỉ Contract mạng ảo, sẵn sàng kết nối với Frontend.
 - **Tái cấu trúc kế hoạch dự án:**
   - Cập nhật `PROJECT_PLAN.md`: Đẩy Giai đoạn làm Frontend lên thực hiện ngay lập tức trong Phase 3 để bắt kịp tiến độ Demo MVP cho Mentor vào Thứ Sáu, đẩy Giai đoạn Viết Test lùi lại thành Phase 4.
+
+---
+
+## Ngày 8: Khởi tạo Bộ khung Frontend (Frontend Scaffolding)
+**Trạng thái:** ✅ Hoàn thành
+
+**Các công việc đã thực hiện:**
+- **Khởi tạo Dự án React + Vite:**
+  - Thiết lập thành công ứng dụng React TypeScript bên trong thư mục `frontend/`.
+  - Cài đặt thư viện `ethers` (v6) để giao tiếp với mạng lưới Blockchain và ví MetaMask.
+- **Xây dựng Hệ thống Giao diện (Premium UI):**
+  - Đã triển khai `index.css` theo yêu cầu phong cách Xanh Lá - Trắng (Green & White). Giao diện mang lại cảm giác tin cậy (Trustworthy), dịu mắt và cực kỳ hiện đại.
+  - Tích hợp hiệu ứng Kính (Glassmorphism), bóng đổ đa tầng (Shadows) và nút bấm động (Micro-animations).
+- **Thiết lập Cấu hình Hợp đồng:**
+  - Lấy ABI và địa chỉ thực tế của 3 Smart Contracts (`MockUSDC`, `VaultManager`, `SavingCore`) từ bản Deploy ở mạng Localhost lưu trữ vào tệp `constants.ts`.
+- **Hoàn thiện Nút Connect Wallet:**
+  - Trong `App.tsx`, đã xây dựng thành công tính năng "Connect Wallet" yêu cầu quyền truy cập MetaMask.
+  - Tính năng tự động hiển thị địa chỉ ví thu gọn (VD: `0x123...abcd`) khi kết nối thành công. Giao diện thay đổi mượt mà báo hiệu người dùng đã sẵn sàng thao tác trong những ngày tới.
+
+---
+
+## Ngày 9: Tương tác Giao diện & Chức năng Gửi tiền (UI Implementation)
+**Trạng thái:** ✅ Hoàn thành
+
+**Các công việc đã thực hiện:**
+- **Triển khai Faucet (Nhận token test):**
+  - Xây dựng nút "Mint 1,000 mUSDC". Khi click, Frontend sẽ gọi trực tiếp đến hàm `mint` của hợp đồng `MockUSDC`.
+  - Tự động hiển thị số dư khả dụng (mUSDC) của người dùng ngay trên thanh Header.
+- **Tải Danh sách Gói Tiết Kiệm (Fetch Plans):**
+  - Tích hợp hàm `loadData` đọc biến `nextPlanId` từ hợp đồng `SavingCore`. Dùng vòng lặp gọi thông tin từng gói (APR, Penalty, Tenor).
+  - Trình bày thông tin gói tiết kiệm dưới dạng các "Thẻ Card" đẹp mắt. Các thông số được xử lý chia tỷ lệ (/100) để hiển thị định dạng phần trăm (Ví dụ: 2.50%).
+- **Xử lý Luồng Gửi tiền 2 bước (Two-step Deposit Flow):**
+  - Thiết kế Form nhập số tiền (mUSDC) kết hợp khung chọn Gói Tiết Kiệm.
+  - Tối ưu hóa trải nghiệm người dùng với chuỗi gọi hàm tự động qua `ethers.js`: 
+    1. Đầu tiên gọi hàm `approve` của MockUSDC để mở khóa chi tiêu. 
+    2. Chờ giao dịch xác nhận (wait) rồi tự động gọi tiếp hàm `openDeposit` của SavingCore.
+  - Bổ sung hiệu ứng nút "Processing..." và hiển thị thông báo thành công (alert) giúp người dùng an tâm thao tác.
+
+---
+
+## Ngày 10: Xây dựng Dashboard Quản lý & Tương tác khoản gửi
+**Trạng thái:** ✅ Hoàn thành (Sẵn sàng Demo MVP)
+
+**Các công việc đã thực hiện:**
+- **Triển khai Dashboard "My Active Deposits":**
+  - Xây dựng luồng logic quét qua toàn bộ NFT (`tokenId`) trên mạng lưới, sử dụng `ownerOf` để lọc ra danh sách các Chứng chỉ Tiền gửi thuộc sở hữu của ví đang kết nối.
+  - Xử lý các Token đã bị đốt (burned) an toàn bằng khối `try-catch` để không làm gián đoạn vòng lặp.
+  - Hiển thị danh sách dưới dạng Thẻ chứa đầy đủ dữ liệu tài chính (Gốc, Lãi, Phí phạt, Thời gian đếm ngược).
+- **Hệ thống nút hành động thông minh (Smart Action Buttons):**
+  - Sử dụng đồng hồ đếm ngược theo thời gian thực (Real-time Timer) cập nhật liên tục mỗi giây để so sánh với thời gian đáo hạn (`maturityTime`).
+  - **Trạng thái chưa đáo hạn (Locked):** Hệ thống chỉ hiển thị nút màu đỏ "Early Withdraw". Nếu người dùng bấm vào, trình duyệt sẽ bật lên một cảnh báo (Confirm dialog) xác nhận việc họ sẽ mất sạch lãi và chịu phạt phần trăm để tránh ấn nhầm. Khi xác nhận, gọi hàm `earlyWithdraw`.
+  - **Trạng thái đã đáo hạn (Matured):** Hệ thống tự động ẩn nút rút trước hạn, hiện ra thông báo "Ready to Claim!". Đồng thời hiển thị 2 nút bấm mới là "Withdraw" (Gửi lệnh `withdrawAtMaturity`) và "Renew" (Gửi lệnh `renewDeposit`).
+- **Thử nghiệm thành công:** Mọi luồng giao dịch đều kích hoạt MetaMask chính xác và tự động Load lại (Refresh) dữ liệu ngay sau khi mạng lưới xác nhận thành công. Giao diện Frontend giờ đã trở thành một hệ thống DApp hoạt động độc lập và hoàn hảo!

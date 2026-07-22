@@ -38,13 +38,13 @@ This document outlines the end-to-end development roadmap for the Online Banking
 
 ## 💻 Phase 3: Web3 Frontend Integration (Days 8 - 10)
 *Note: Accelerated for MVP Demo.*
-- [ ] **Day 8: Frontend Scaffolding**
+- [x] **Day 8: Frontend Scaffolding**
   - Setup React (Vite) project.
   - Integrate `ethers.js` and MetaMask connection.
-- [ ] **Day 9: UI Implementation (Plans & Deposits)**
+- [x] **Day 9: UI Implementation (Plans & Deposits)**
   - Render available Saving Plans.
   - Implement `openDeposit` form and transaction execution.
-- [ ] **Day 10: Dashboard & User Actions**
+- [x] **Day 10: Dashboard & User Actions**
   - Display user's Active Deposits (reading ERC721 tokens).
   - Implement Withdraw and Renew action buttons with error handling.
 
