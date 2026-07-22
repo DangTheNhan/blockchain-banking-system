@@ -23,7 +23,7 @@ This document outlines the end-to-end development roadmap for the Online Banking
   - Write test cases for `MockUSDC` minting and `VaultManager` logic.
 
 ## 🧠 Phase 2: Core Business Logic (Days 4 - 7)
-- [ ] **Day 4: SavingCore & Plan Logic**
+- [x] **Day 4: SavingCore & Plan Logic**
   - Implement `SavingCore.sol` inheriting ERC721.
   - Implement `createPlan`, `updatePlan`, `enablePlan`, `disablePlan`.
 - [ ] **Day 5: Deposit & Maturity Withdrawals**

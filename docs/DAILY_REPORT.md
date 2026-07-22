@@ -56,3 +56,23 @@ Tài liệu này ghi lại chi tiết các công việc đã hoàn thành theo t
   - Đảm bảo không thể nạp quỹ khi hệ thống bị tạm ngưng (`EnforcedPause`).
 - **Khởi chạy Test Suite:**
   - Chạy `npx hardhat test` và tất cả các test case đều đã passed thành công (11/11 tests passing).
+
+---
+
+## Ngày 4: SavingCore & Plan Logic
+**Trạng thái:** ✅ Hoàn thành
+
+**Các công việc đã thực hiện:**
+- **Triển khai `SavingCore.sol`:**
+  - Viết Smart Contract chính kế thừa từ `ERC721` (để cấp phát Chứng chỉ tiền gửi - Certificate of Deposit dưới dạng NFT) và `Ownable` (dành cho các thao tác cấu hình Plan).
+  - Tích hợp `SafeERC20` để chuẩn bị cho các luồng xử lý nạp/rút tiền (deposit/withdraw) trong những ngày tới.
+- **Xây dựng cấu trúc Plan (Gói tiết kiệm):**
+  - Định nghĩa struct `Plan` lưu trữ thông tin về: `apr` (Lãi suất), `penalty` (Phí phạt rút trước hạn), `tenor` (Kỳ hạn tính bằng giây), và `enabled` (Trạng thái kích hoạt).
+  - Cài đặt hệ thống lưu trữ gói dựa trên `planId` tăng dần (bắt đầu từ 1).
+- **Các hàm quản trị (Admin Functions):**
+  - `createPlan`: Cho phép Owner tạo các gói tiết kiệm mới với tham số linh hoạt.
+  - `updatePlan`: Cho phép cập nhật gói đã có (lưu ý theo yêu cầu của hệ thống, điều này không ảnh hưởng đến các Deposit cũ đã snapshot tỷ lệ).
+  - `enablePlan` / `disablePlan`: Bật hoặc tắt trạng thái tiếp nhận tiền gửi mới của một gói.
+  - Các sự kiện (events) đầy đủ được gắn vào các hàm trên (`PlanCreated`, `PlanUpdated`, `PlanEnabled`, `PlanDisabled`).
+- **Biên dịch (Compile):**
+  - Chạy `npx hardhat compile` thành công (Solc 0.8.28) để xác minh tính chính xác về mặt cú pháp của hợp đồng.
